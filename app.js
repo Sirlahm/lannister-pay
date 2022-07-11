@@ -1,10 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 
-const computeRoute = require('./route')
+const computeRoute = require("./route");
 const app = express();
-
-
 
 app.use(cors());
 
@@ -16,6 +14,5 @@ app.get("/split-payments", (req, res, next) => {
 });
 
 app.use("/split-payments", computeRoute.router);
-
 
 app.listen(process.env.PORT || 3001);

@@ -7,10 +7,11 @@ const compute = (req, res, next) => {
     return res.status(422).json({ errors: errors.array()[0].msg });
   }
 
-  //RULE 1: Initial Balance
+  // Initializing Balance
   let balance = Number(Amount);
   let total = 0;
 
+  // Arrays for each splitType
   const flatTypes = [];
   const percentageTypes = [];
   const ratioTypes = [];
@@ -32,12 +33,9 @@ const compute = (req, res, next) => {
     }
   });
 
-  //RULE 2: Arrange in order of precedence for Split Type
-  // const allSplitTypes = flatTypes.concat(
-  //   percentageTypes,
-  //   ratioTypes
-  // );
+  //Arrange in order of precedence for Split Type
   const allSplitTypes = [...flatTypes, ...percentageTypes, ...ratioTypes];
+
   const finalSplitBreakDown = [];
   let ratioBalance;
 

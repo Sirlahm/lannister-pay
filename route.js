@@ -5,30 +5,38 @@ const { check } = require("express-validator");
 const compute = require("./controller");
 const router = express.Router();
 
-
-
 router.post(
   "/compute",
   [
-    check("ID").isNumeric().withMessage("ID should be numeric"),
+    check("ID").isNumeric().withMessage("ID must be numeric"),
+    check("Amount", "Amount must be numeric and must be greater than 0").isNumeric().custom((val ) => val > 0),
+    check("Currency", "Currency must be string and must not be empty").isString().not()
+    .isEmpty(),
+
     check(
       "SplitInfo",
-      "SplitInfo should be an array of entities not more than 20"
+      "SplitInfo must be an array of entities : minimum of 1 entity and maximum 0f 20 entiies"
     )
       .isArray()
-      .custom((item) => item.length <= 20),
-    check("SplitInfo.*.SplitType")
+      .isLength({min: 1})
+      .custom((item) => item.length <= 20 ),
+    check(
+      "SplitInfo.*.SplitType",
+      "SplitType must not be empty and must be either FLAT, PERCENTAGE or RATIO"
+    )
       .not()
       .isEmpty()
-      .withMessage("SplitType should not be empty"),
-    check("SplitInfo.*.SplitValue")
+      .isIn(["FLAT", "PERCENTAGE", "RATIO"]),
+    check(
+      "SplitInfo.*.SplitValue",
+      "SplitValue must not be empty and must be numeric"
+    )
       .not()
       .isEmpty()
-      .withMessage("SplitValue should not be empty"),
-    check("SplitInfo.*.SplitEntityId", "SplitEntityId should not be empty")
+      .isNumeric(),
+    check("SplitInfo.*.SplitEntityId", "SplitEntityId must not be empty")
       .not()
-      .isEmpty()
-      .isAlphanumeric(),
+      .isEmpty(),
     check("CustomerEmail")
       .normalizeEmail()
       .isEmail()
